@@ -5,4 +5,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\LibBundledGGPK3\LibBundledGGPK3.csproj" />
 	</ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<DebugSymbols>False</DebugSymbols>
+		<DebugType>None</DebugType>
+	</PropertyGroup>
 </Project>

@@ -7,4 +7,8 @@ Contains LibGGPK3 and LibBundle3</Description>
 		<ProjectReference Include="..\LibBundle3\LibBundle3.csproj" />
 		<ProjectReference Include="..\LibGGPK3\LibGGPK3.csproj" />
 	</ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<DebugSymbols>False</DebugSymbols>
+		<DebugType>None</DebugType>
+	</PropertyGroup>
 </Project>
