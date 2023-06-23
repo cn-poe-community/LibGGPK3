@@ -12,26 +12,12 @@ namespace ExtractBundledGGPK3 {
 				var version = Assembly.GetExecutingAssembly().GetName().Version!;
 				Console.WriteLine($"ExtractBundledGGPK3 (v{version.Major}.{version.Minor}.{version.Build})  Copyright (C) 2022 aianlinb"); // ©
 				Console.WriteLine();
-				if (args.Length == 0) {
-					args = new string[3];
-					Console.Write("Path to Content.ggpk: ");
-					args[0] = Console.ReadLine()!;
-					Console.Write("Path to directory/file to extract: ");
-					args[1] = Console.ReadLine()!;
-					Console.Write("Path to save the extracted directory/file: ");
-					args[2] = Console.ReadLine()!;
-				} else if (args.Length != 3) {
+				if (args.Length != 3) {
 					Console.WriteLine("Usage: ExtractBundledGGPK3 <PathToGGPK> <PathToExtract> <PathToSave>");
-					Console.WriteLine();
-					Console.WriteLine("Enter to exit . . .");
-					Console.ReadLine();
 					return;
 				}
 				if (!File.Exists(args[0])) {
 					Console.WriteLine("FileNotFound: " + args[0]);
-					Console.WriteLine();
-					Console.WriteLine("Enter to exit . . .");
-					Console.ReadLine();
 					return;
 				}
 
@@ -44,9 +30,6 @@ namespace ExtractBundledGGPK3 {
 				var node = ggpk.Index.FindNode(args[1]);
 				if (node == null) {
 					Console.WriteLine("Not found in GGPK: " + args[1]);
-					Console.WriteLine();
-					Console.WriteLine("Enter to exit . . .");
-					Console.ReadLine();
 					return;
 				}
 				Console.WriteLine("Extracting files . . .");
@@ -58,9 +41,6 @@ namespace ExtractBundledGGPK3 {
 				Console.Error.WriteLine(e);
 			}
 #endif
-			Console.WriteLine();
-			Console.WriteLine("Enter to exit . . .");
-			Console.ReadLine();
 		}
 	}
 }
