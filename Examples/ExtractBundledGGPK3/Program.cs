@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace ExtractBundledGGPK3 {
 	public class Program {
-		public static void Main(string[] args) {
+		public static int Main(string[] args) {
 #if !DEBUG
 			try {
 #endif
@@ -14,11 +14,11 @@ namespace ExtractBundledGGPK3 {
 				Console.WriteLine();
 				if (args.Length != 3) {
 					Console.WriteLine("Usage: ExtractBundledGGPK3 <PathToGGPK> <PathToExtract> <PathToSave>");
-					return;
+					return 1;
 				}
 				if (!File.Exists(args[0])) {
 					Console.WriteLine("FileNotFound: " + args[0]);
-					return;
+					return 1;
 				}
 
 				Console.WriteLine("GGPK: " + args[0]);
@@ -30,7 +30,7 @@ namespace ExtractBundledGGPK3 {
 				var node = ggpk.Index.FindNode(args[1]);
 				if (node == null) {
 					Console.WriteLine("Not found in GGPK: " + args[1]);
-					return;
+					return 1;
 				}
 				Console.WriteLine("Extracting files . . .");
 				ggpk.Index.Extract(node, args[2]);
@@ -39,8 +39,10 @@ namespace ExtractBundledGGPK3 {
 #if !DEBUG
 			} catch (Exception e) {
 				Console.Error.WriteLine(e);
+				return 1;
 			}
 #endif
+		return 0;
 		}
 	}
 }
