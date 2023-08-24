@@ -13,7 +13,7 @@ namespace PoeChinese3 {
 				Console.OutputEncoding = Encoding.UTF8;
 				var assembly = Assembly.GetExecutingAssembly();
 				var version = assembly.GetName().Version!;
-				Console.WriteLine($"PoeChinese3 (v{version.Major}.{version.Minor}.{version.Build})  Copyright (C) 2022 aianlinb"); // ©
+				Console.WriteLine($"PoeChinese3 (v{version.Major}.{version.Minor}.{version.Build})  Copyright (C) 2022-2023 aianlinb"); // ©
 				Console.WriteLine($"流亡黯道 - 啟/禁用繁體中文語系  By aianlinb");
 				Console.WriteLine();
 
@@ -95,7 +95,7 @@ namespace PoeChinese3 {
 				Console.ForegroundColor = ConsoleColor.Yellow;
 				Console.WriteLine("Warning: Cannot find file: Art/UIImages1.txt");
 				Console.WriteLine("Warning: The national flag pattern in start menu won't be replaced");
-				Console.WriteLine("警告: 找不到 UIImages1.txt ， 登入畫面的國旗圖案將不會改變");
+				Console.WriteLine("警告: 找不到 UIImages1.txt，登入畫面的國旗圖案將不會改變");
 				Console.ForegroundColor = color;
 				lang.Write(dat.Save(false, false)); // also saved the index
 				return;

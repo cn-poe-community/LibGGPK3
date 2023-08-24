@@ -8,16 +8,13 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Reflection;
+using System.Security.Authentication;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace VPatchGGPK3 {
 	public class MainWindow : Form {
-		private readonly HttpClient http = new(new HttpClientHandler() {
-			UseCookies = false,
-			CheckCertificateRevocationList = false,
-			ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-		});
+		private readonly HttpClient http;
 
 		private readonly RadioButton tw;
 		private readonly TextBox ggpkPath;
@@ -29,6 +26,13 @@ namespace VPatchGGPK3 {
 			Closed += closed;
 			Application.Instance.Terminating += (s, e) => Closed -= closed;
 #endif
+			var handler = new SocketsHttpHandler() { UseCookies = false };
+			handler.SslOptions.CertificateRevocationCheckMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.NoCheck;
+			handler.SslOptions.RemoteCertificateValidationCallback = delegate { return true; };
+			handler.SslOptions.EnabledSslProtocols |= SslProtocols.Tls | SslProtocols.Tls11
+												| SslProtocols.Tls12 | SslProtocols.Tls13;
+			http = new(handler) { DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrHigher };
+
 			var version = Assembly.GetExecutingAssembly().GetName().Version!;
 			Title = $"VPatchGGPK3 (v{version.Major}.{version.Minor}.{version.Build})";
 			ClientSize = new(450, 280);
@@ -80,7 +84,7 @@ namespace VPatchGGPK3 {
 				 ReadOnly = true
 			}, null, true);
 			layout.Add(new Label() {
-				Text = "Copyright © 2022 aianlinb",
+				Text = "Copyright © 2022-2023 aianlinb",
 				TextAlignment = TextAlignment.Right,
 				VerticalAlignment = VerticalAlignment.Bottom,
 				Size = new Size(100, 20)
@@ -117,8 +121,9 @@ namespace VPatchGGPK3 {
 		}
 
 		private async void OnButtonClick(object? sender, EventArgs e) {
+			var path = ggpkPath.Text;
 			try {
-				File.WriteAllText("VPatchGGPK3.txt", ggpkPath.Text);
+				File.WriteAllText("VPatchGGPK3.txt", path);
 			} catch { }
 
 			try {
@@ -137,11 +142,12 @@ namespace VPatchGGPK3 {
 					return;
 				}
 
-				output.Append("Reading ggpk: " + ggpkPath.Text + "\r\n", true);
-				var ggpk = await Task.Run(() => new GGPK(ggpkPath.Text));
+				output.Append("Reading ggpk: " + path + "\r\n", true);
+				var ggpk = await Task.Run(() => new GGPK(path));
 				var md5 = json.GetProperty("md5").GetString()!;
 				output.Append("Downloading patch file . . .\r\n", true);
 				var zip = new ZipArchive(await http.GetStreamAsync("https://poedb.tw/fg/" + md5 + ".zip"));
+				// if (md5 != System.Security.Cryptography.MD5.HashData(...)) ...
 				foreach (var entry in zip.Entries) {
 					if (entry.FullName.EndsWith('/'))
 						continue;
@@ -160,6 +166,7 @@ namespace VPatchGGPK3 {
 					output.Append("Replaced: " + entry.FullName + "\r\n", true);
 				}
 				output.Append("\r\nDone!\r\n", true);
+				output.Append("中文化完成!\r\n", true);
 				ggpk.Dispose();
 			} catch (Exception ex) {
 				MessageBox.Show(this, ex.ToString(), "Error", MessageBoxType.Error);
